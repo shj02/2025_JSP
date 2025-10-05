@@ -10,7 +10,7 @@
 	<h1>* 로그인 화면 *</h1>
 	<h2><%=request.getAttribute("msg") %></h2>
 	<br><br>
-	<form action="loginProcess.jsp">
+	<form action="loginForm.jsp">
 		<input type="submit" value="초기화면">
 	</form>
 	
