@@ -9,7 +9,7 @@
 
     <div class="title" style="font-weight: bold; font-size: 32px;">
         DailyDot 
-        <span id="dateDisplay" style="font-size: 16px; font-weight: normal; color: gray; margin-left: 5px;"></span>
+        <span id="dateDisplay" style="font-size: 16px; font-weight: normal; color: gray; margin-left: 2px;"></span>
     </div>
 
     <!-- 입력 + 추가 버튼 -->
@@ -59,34 +59,6 @@
     <!-- todoList -->
     <div class="todoListWrapper" style="margin-top: 20px;">
         <div id="todoList" class="list-group">
-            <div class="list-group-item d-flex align-items-center">
-                <input class="form-check-input me-2 todo-check" type="checkbox">
-                <span class="todo-text">📑 오늘의 DailyDot 한 가지 쓰기</span>
-                <button
-                    type="button"
-                    class="btn btn-sm text-danger todo-delete ms-auto border-0 bg-transparent p-0">🗑️</button>
-            </div>
-            <div class="list-group-item d-flex align-items-center">
-                <input class="form-check-input me-2 todo-check" type="checkbox">
-                <span class="todo-text">📖 JSP 과제하기</span>
-                <button
-                    type="button"
-                    class="btn btn-sm text-danger todo-delete ms-auto border-0 bg-transparent p-0">🗑️</button>
-            </div>
-            <div class="list-group-item d-flex align-items-center">
-                <input class="form-check-input me-2 todo-check" type="checkbox">
-                <span class="todo-text">🥗 운동 30분</span>
-                <button
-                    type="button"
-                    class="btn btn-sm text-danger todo-delete ms-auto border-0 bg-transparent p-0">🗑️</button>
-            </div>
-            <div class="list-group-item d-flex align-items-center">
-                <input class="form-check-input me-2 todo-check" type="checkbox">
-                <span class="todo-text">🫧 다이어리 쓰기</span>
-                <button
-                    type="button"
-                    class="btn btn-sm text-danger todo-delete ms-auto border-0 bg-transparent p-0">🗑️</button>
-            </div>
         </div>
     </div>
 
@@ -101,6 +73,9 @@
         style="margin-top: 30px; height: 20px;"
     >
         <div class="progress-bar bg-dark" style="width: 0%;"></div>
+    </div>
+    <div id="completeMsg" style="display: none; text-align: center; margin-top: 10px; color: green; font-size: 18px;">
+        오늘의 Dot 모두 완료!
     </div>
 
 </div>
@@ -119,9 +94,13 @@
 
             const checkboxes = listEl.querySelectorAll('.todo-check');
             const total = checkboxes.length;
+            
+            const completeMsg = document.getElementById('completeMsg');
+
             if (total === 0) {
                 progressBar.style.width = '0%';
                 progressEl.setAttribute('aria-valuenow', '0');
+                if (completeMsg) completeMsg.style.display = 'none'; 
                 return;
             }
 
@@ -133,37 +112,55 @@
             const percent = Math.round((done / total) * 100);
             progressBar.style.width = percent + '%';
             progressEl.setAttribute('aria-valuenow', String(percent));
+
+            if (completeMsg) {
+                if (percent === 100) {
+                    completeMsg.style.display = 'block';
+                } else {
+                    completeMsg.style.display = 'none';
+                }
+            }
         }
 
      
         window.loadTodos = function(selectedDate) {
             
-            // 1. 오늘 날짜 구하기
+            // 오늘 날짜 구하기
             const now = new Date();
             const year = now.getFullYear();
             const month = String(now.getMonth() + 1).padStart(2, '0');
             const day = String(now.getDate()).padStart(2, '0');
-            const todayStr = year + '-' + month + '-' + day; // "2025-12-05"
+            const todayStr = year + '-' + month + '-' + day; 
+            
+            const progressContainer = document.querySelector('.progress');
+            const completeMsg = document.getElementById('completeMsg');
 
-            // 2. [수정됨] 화면에 날짜 표시하기 (크기 조절 가능)
+            // 화면에 날짜 표시
             const dateEl = document.getElementById('dateDisplay');
             if (dateEl) {
-                // 선택된 날짜가 있으면 그걸 쓰고, 없으면(처음 켤 때) 오늘 날짜를 씁니다.
                 const displayDate = selectedDate ? selectedDate : todayStr;
-                dateEl.textContent = '(' + displayDate + ')';
+                dateEl.textContent = displayDate;
             }
 
-            // 3. 편집 가능 여부 판단
+            // 편집 가능 여부 판단
             let isEditable = false;
             if (!selectedDate || selectedDate === todayStr) {
                 isEditable = true;
+            }
+            
+            if (progressContainer) {
+                if (isEditable) {
+                    progressContainer.style.visibility = 'visible';
+                } else {
+                    progressContainer.style.visibility = 'hidden';
+                    if (completeMsg) completeMsg.style.display = 'none';
+                }
             }
 
             let url = '/todo/list';
             if (selectedDate) {
                 url += '?date=' + selectedDate;
-                // [삭제됨] 기존의 titleEl.textContent 변경 코드는 이제 필요 없습니다.
-            }
+            } 
 
             fetch(url)
                 .then(response => response.json())
@@ -171,8 +168,8 @@
                     listEl.innerHTML = ''; 
 
                     if (data.length === 0) {
-                        listEl.innerHTML = '<div class="text-center text-muted mt-3">No Dots...</div>';
-                        updateProgress();
+                        listEl.innerHTML = '<div class="text-center text-muted mt-3">No dots for this day.</div>';
+                        if(isEditable) updateProgress();
                         return;
                     }
 
@@ -194,51 +191,52 @@
                         const item = document.createElement('div');
                         item.className = 'list-group-item d-flex align-items-center';
                         
-                        // 완료된 항목 스타일
-                        if(todo.completed) item.classList.add('todo-done');
+                        // 오늘만 완료 표시 적용
+                        if(isEditable && todo.completed) {
+                            item.classList.add('todo-done');
+                        }
 
-                        const checkbox = document.createElement('input');
-                        checkbox.type = 'checkbox';
-                        checkbox.className = 'form-check-input me-2 todo-check';
-                        checkbox.checked = todo.completed;
-                        checkbox.dataset.id = todo.todoId;
+                        // 오늘만 체크박스 생성
+                        if (isEditable) {
+                            const checkbox = document.createElement('input');
+                            checkbox.type = 'checkbox';
+                            checkbox.className = 'form-check-input me-2 todo-check';
+                            checkbox.checked = todo.completed;
+                            checkbox.dataset.id = todo.todoId;
+                            item.appendChild(checkbox);
+                        } else {
+                        	
+                        }
 
                         const span = document.createElement('span');
                         span.className = 'todo-text';
                         span.innerHTML = emoji + ' ' + todo.content + dotHtml;
-
-                        // [핵심 기능] 오늘이 아니면 편집 제한
-                        if (!isEditable) {
-                            checkbox.disabled = true;       // 체크박스 잠금
-                            item.style.opacity = '0.6';     // 전체적으로 흐리게
-                        }
-
-                        item.appendChild(checkbox);
+                        
                         item.appendChild(span);
 
-                        // [핵심 기능] 오늘일 때만 삭제 버튼 추가
+                        // 오늘만 삭제 버튼 생성
                         if (isEditable) {
                             const delBtn = document.createElement('button');
                             delBtn.type = 'button';
                             delBtn.className = 'btn btn-sm text-danger todo-delete ms-auto border-0 bg-transparent p-0';
                             delBtn.textContent = '🗑️';
                             
-                            // 삭제 버튼에도 ID 심어두기 (나중을 위해)
                             delBtn.dataset.id = todo.todoId; 
-                         
                             delBtn.dataset.date = selectedDate ? selectedDate : todayStr;
+                            
                             item.appendChild(delBtn);
                         }
 
                         listEl.appendChild(item);
                     });
-                    
-                    updateProgress();
+
+					// 오늘만 진행률 업데이트
+                    if (isEditable) {
+                        updateProgress();
+                    }
                 })
                 .catch(err => console.error("리스트 로드 실패:", err));
         };
-
-        // 페이지 로드 시 실행 (맨 아래에 있던 loadTodos() 대신 이거 사용)
         window.loadTodos();
 
         if (listEl) {
@@ -250,26 +248,23 @@
                 }
             });
 
-            // 체크박스 변경 이벤트 (수정됨)
             listEl.addEventListener('change', function(e) {
                 const target = e.target;
                 if (!(target instanceof HTMLInputElement)) return;
                 if (!target.classList.contains('todo-check')) return;
 
                 const item = target.closest('.list-group-item');
-                const todoId = target.dataset.id; // 아까 loadTodos에서 심어둔 ID 가져오기
-                const isChecked = target.checked; // 체크 여부 (true/false)
+                const todoId = target.dataset.id; 
+                const isChecked = target.checked;
 
                 if (item && todoId) {
-                    // 1. 화면 스타일 먼저 변경 (반응 속도를 위해)
                     if (isChecked) {
                         item.classList.add('todo-done');
                     } else {
                         item.classList.remove('todo-done');
                     }
-                    updateProgress(); // 진행률 업데이트
+                    updateProgress();
 
-                    // 2. 서버에 저장 요청 (AJAX)
                     fetch('/todo/updateStatus', {
                         method: 'POST',
                         headers: {
@@ -281,7 +276,6 @@
                     .then(result => {
                         if (result !== 'success') {
                             alert('상태 저장 실패');
-                            // 실패하면 체크박스 원상복구
                             target.checked = !isChecked;
                             if (!isChecked) item.classList.add('todo-done');
                             else item.classList.remove('todo-done');
@@ -293,9 +287,7 @@
                 }
             });
 
-         // centerPanel.jsp 스크립트 내부
-
-            // 삭제 버튼 이벤트 (수정됨)
+            
             listEl.addEventListener('click', function(e) {
                 const target = e.target;
                 if (!(target instanceof HTMLElement)) return;
@@ -306,15 +298,15 @@
                 const item = delBtn.closest('.list-group-item');
                 if (!item) return;
                 
-                // 1. 삭제할 투두의 ID 가져오기
+                // 삭제할 투두의 ID 가져옴
                 const todoId = delBtn.dataset.id;
                 
-                // 날짜 정보 가져오기
+                // 날짜 정보 가져옴
                 const dateStr = delBtn.dataset.date;
                 
-                // 2. 서버에 삭제 요청 보내기
+                // 서버에 삭제 요청 보냄
                 if (todoId) {
-                    if(!confirm('정말 삭제하시겠습니까?')) return; // (선택사항) 실수 방지용 확인창
+                    if(!confirm('정말 삭제하시겠습니까?')) return;
 
                     fetch('/todo/delete', {
                         method: 'POST',
@@ -326,7 +318,6 @@
                     .then(response => response.text())
                     .then(result => {
                         if (result === 'success') {
-                            // 3. 서버 삭제 성공 시 화면에서도 제거
                             item.remove();
                             updateProgress();
                             console.log('삭제 완료:', todoId);
@@ -356,7 +347,6 @@
                 const categoryId = selectedCategory ? selectedCategory.id : 'cat-study';
                 const typeId = selectedType ? selectedType.id : 'today';
 
-                // AJAX 요청 부분 (기존과 동일)
                 fetch('/todo/add', {
                     method: 'POST',
                     headers: {
@@ -369,7 +359,7 @@
                 .then(response => response.text())
                 .then(result => {
                     if (result === 'success') {
-                        loadTodos(); // [중요] 저장 성공하면 목록 다시 불러오기 (화면 갱신)
+                        loadTodos(); 
                         inputEl.value = '';
                     } else {
                         alert('저장 실패');

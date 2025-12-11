@@ -16,7 +16,27 @@
 	    background-color: #e6e3e3;
 	    min-height: 100vh;
 	    margin: 0;
+	    cursor: url("/image/cursorWinter.png") 0 0, auto;
 	}
+	
+	body.spring {
+        cursor: url("/image/cursorSpring.png") 0 0, auto;
+    }
+
+    /* 🌊 여름 (파일명 오타 주의: Sumer) */
+    body.summer {
+        cursor: url("/image/cursorSummer.png") 0 0, auto;
+    }
+
+    /* 🍂 가을 */
+    body.autumn {
+        cursor: url("/image/cursorAutumn.png") 0 0, auto;
+    }
+
+    /* ❄️ 겨울 */
+    body.winter {
+        cursor: url("/image/cursorWinter.png") 0 0, auto;
+    }
 	
 	.login-container {
 	    background-color: white;
@@ -39,15 +59,20 @@
 
 </style>
 </head>
-<body>
+<body class="${season }">
 	<div class="container-fluid"> 
         <div class="row justify-content-center"> 
-             <div class="col-md-8"> 
+             <div class="col-12 col-lg-10 col-xl-9"> 
                 <div class="login-container">
                     
                     <h2 class="text-center mb-5">Welcome to DailyDot!</h2>
+                    <div style="height: 24px; margin-bottom: 20px; text-align: center;">
+                        <span class="text-danger" style="font-weight: bold;">
+                            ${loginError}
+                        </span>
+                    </div>
                     
-                    <form action="/user/loginProcess" method="post">
+                    <form action="/user/loginProcess" method="post" style="width: 600px; margin: 0 auto;">
                         
                         <div class="mb-3">
 							<label for="userIdInput" class="form-label">ID</label>

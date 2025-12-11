@@ -17,7 +17,21 @@
         background-color: #e6e3e3;
         min-height: 100vh;
         margin: 0;
-        cursor: url("/image/cursor_black.png") 4 4, auto;
+        /* 기본 커서 검정(겨울)*/
+        cursor: url("/image/cursorWinter.png"), auto; 
+    }
+	/* 계절 별 커서 변경 */
+    body.spring {
+        cursor: url("/image/cursorSpring.png"), auto;
+    }
+    body.summer {
+        cursor: url("/image/cursorSummer.png"), auto;
+    }
+    body.autumn {
+        cursor: url("/image/cursorAutumn.png"), auto;
+    }
+    body.winter {
+        cursor: url("/image/cursorWinter.png"), auto;
     }
 
     .main-container {
@@ -29,14 +43,14 @@
     }
 </style>
 </head>
-<body>
+<body class="${season }">
     <div class="container-fluid">
         <div class="row justify-content-center" style="min-height: 100vh;">
 
             <div class="col-12 col-lg-10 col-xl-9">
                 <div class="main-container">
                     <div class="row gx-0">
-                        <div class="col-md-2 border-end px-0">
+                        <div class="col-md-2 px-0">
                             <jsp:include page="profile.jsp" />
                         </div>
 
@@ -44,7 +58,7 @@
                             <jsp:include page="centerPanel.jsp" />
                         </div>
 
-                        <div class="col-md-4 border-start px-0">
+                        <div class="col-md-4 px-0">
                             <jsp:include page="rightPanel.jsp" />
                         </div>
                     </div>

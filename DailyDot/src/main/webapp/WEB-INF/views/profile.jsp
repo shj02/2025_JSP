@@ -34,7 +34,7 @@
     <div class="profileImage" style="text-align: left;">
         <img
             alt="profile"
-            src="/image/profile.png"
+            src="/image/profileCat.png"
             style="width: 140px; height: auto; padding-bottom: 8px;"
        	>
 
@@ -51,6 +51,10 @@
 
         <a href="/user/profileEdit" class="btn btn-sm text-secondary border-0 bg-transparent p-0" style="text-align: left; font-size: 12px">
             ⚙️ Edit Profile
+        </a>
+        
+        <a href="/user/logout" class="btn btn-sm text-secondary border-0 bg-transparent p-0" style="text-align: left; font-size: 12px; display: block; margin-top: 5px;">
+            🚪 Logout
         </a>
     </div>
 

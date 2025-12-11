@@ -16,11 +16,26 @@
 	    background-color: #e6e3e3;
 	    min-height: 100vh;
 	    margin: 0;
+	    cursor: url("/image/cursorWinter.png") 0 0, auto;
 	}
+
+    /* 계절 별 커서 변경*/
+    body.spring {
+        cursor: url("/image/cursorSpring.png") 0 0, auto;
+    }
+    body.summer {
+        cursor: url("/image/cursorSummer.png") 0 0, auto;
+    }
+    body.autumn {
+        cursor: url("/image/cursorAutumn.png") 0 0, auto;
+    }
+    body.winter {
+        cursor: url("/image/cursorWinter.png") 0 0, auto;
+    }
 	
 	.login-container {
-	    background-color: white;
-	    padding: 40px;
+	    background-color: #ffffff;
+	    padding: 40px 20px;
 	    border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         
@@ -36,17 +51,21 @@
     .form-control, .form-label, .form-text, .btn {
         font-size: 1rem;
     }
+    
+    .mb-3 {
+    padding-bottom: 10px;
+    }
 </style>
 </head>
-<body>
+<body class="${season }">
 	<div class="container-fluid"> 
         <div class="row justify-content-center"> 
-             <div class="col-md-8"> 
+             <div class="col-12 col-lg-10 col-xl-9"> 
                 <div class="login-container">
                     
                     <h2 class="text-center mb-5">Edit Your Profile Here!</h2>
                     
-                    <form action="/user/update" method="post">
+                    <form action="/user/update" method="post" style="width: 600px; margin: 0 auto;">
                         
                         <div class="mb-3">
 							<label for="userIdInput" class="form-label">ID</label>

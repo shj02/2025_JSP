@@ -4,7 +4,7 @@
 
 <style>
     .right-panel {
-        padding: 15px 0 15px 15px;
+        padding: 15px 15px 15px 15px;
         font-family: 'Galmuri11', sans-serif;
     }
 
@@ -21,9 +21,9 @@
     }
 
 	.fc .fc-daygrid-day-number {
-        color: #000000 !important; /* 글자색: 진한 회색 (검정) */
+        color: #000000 !important;
         text-decoration: none !important; /* 밑줄 제거 */
-        font-weight: bold; /* (선택) 글자 굵게 */
+        font-weight: bold;
     }
     
     /* 기본 배경색 */
@@ -41,7 +41,7 @@
         font-size: 10px;
         color: #000000 !important;
         text-shadow: 1px 1px 2px rgba(0,0,0,0.2); 
-        text-decoration: none !important; /* 밑줄 제거 */
+        text-decoration: none !important; 
     }
     .fc .fc-daygrid-day-number {
         font-size: 10px;
@@ -53,17 +53,17 @@
 
     /* 봄 */
     .right-panel.spring .fc .fc-col-header-cell {
-        background: linear-gradient(to right, #de6fa6, #d99cba) !important;
+        background: linear-gradient(to right, #f2b8d2, #f7d5e6) !important;
     }
 
     /* 여름 */
     .right-panel.summer .fc .fc-col-header-cell {
-        background: linear-gradient(to right, #0dcaf0, #76d5e8) !important;
+        background: linear-gradient(to right, #26cef0, #aee9f5) !important;
     }
 
     /* 가을 */
     .right-panel.autumn .fc .fc-col-header-cell {
-        background: linear-gradient(to right, #ffc107, #e6ca77) !important;
+        background: linear-gradient(to right, #ffc107, #f2dda0) !important;
     }
 
     /* 겨울 */
@@ -94,18 +94,15 @@
                 const dateStr = info.dateStr;
                 console.log('선택된 날짜:', dateStr);
 
-                // [추가] 1. 기존에 테두리 쳐진 날짜들 찾아서 원상복구 (초기화)
                 const prevSelected = document.querySelectorAll('.selected-date');
                 prevSelected.forEach(function(el) {
                     el.classList.remove('selected-date');
                 });
 
-                // [추가] 2. 방금 클릭한 날짜(info.dayEl)에 테두리 클래스 추가
                 if (info.dayEl) {
                     info.dayEl.classList.add('selected-date');
                 }
                 
-                // 3. 기존 기능: 투두 리스트 불러오기
                 if (window.loadTodos) {
                     window.loadTodos(dateStr);
                 } else {

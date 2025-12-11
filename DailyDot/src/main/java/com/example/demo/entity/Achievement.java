@@ -17,7 +17,6 @@ import lombok.Data;
 @Entity
 @Table(
 		uniqueConstraints = {
-				//user_id와 date 필드의 조합이 유일!
 				@UniqueConstraint(columnNames = {"user_id", "date"})
 			})
 public class Achievement {

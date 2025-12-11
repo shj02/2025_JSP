@@ -16,7 +16,21 @@
 	    background-color: #e6e3e3;
 	    min-height: 100vh;
 	    margin: 0;
+	    cursor: url("/image/cursorWinter.png") 0 0, auto;
 	}
+	
+	body.spring {
+        cursor: url("/image/cursorSpring.png") 0 0, auto;
+    }
+    body.summer {
+        cursor: url("/image/cursorSummer.png") 0 0, auto;
+    }
+    body.autumn {
+        cursor: url("/image/cursorAutumn.png") 0 0, auto;
+    }
+    body.winter {
+        cursor: url("/image/cursorWinter.png") 0 0, auto;
+    }
 	
 	.login-container {
 	    background-color: white;
@@ -51,15 +65,15 @@
 		return true;
 	}
 </script>
-<body>
+<body class="${season }">
 	<div class="container-fluid"> 
         <div class="row justify-content-center"> 
-             <div class="col-md-8"> 
+             <div class="col-12 col-lg-10 col-xl-9"> 
                 <div class="login-container">
                     
                     <h2 class="text-center mb-5">DailyDot SignUp</h2>
                     
-                    <form action="/user/join" method="post" onsubmit="return validateForm()">
+                    <form action="/user/join" method="post" onsubmit="return validateForm()" style="width: 600px; margin: 0 auto;">
                         
                         <div class="mb-3">
 							<label for="userIdInput" class="form-label">ID</label>
